@@ -1,0 +1,99 @@
+Let's go! 🚀
+
+**Je vais créer les fichiers directement sur GitHub.**
+
+Vous allez voir des liens pour créer chaque fichier. Cliquez et confirmez.
+
+**Fichier 1 : app.py**
+
+Cliquez ici pour créer : https://github.com/LaVitrineAgency/la-vitrine/new/main
+
+Dans le champ "Name your file", écrivez : `app.py`
+
+Puis collez ce code dans l'éditeur :
+
+Collez ce code, puis cliquez **"Commit changes"** ✅
+
+---
+
+**Fichier 2 : requirements.txt**
+
+Cliquez ici : https://github.com/LaVitrineAgency/la-vitrine/new/main
+
+Nommez : `requirements.txt`
+
+Collez :
+```
+flask==3.0.0
+anthropic>=0.100.0
+```
+
+Cliquez **"Commit changes"** ✅
+
+---
+
+**Fichier 3 : Dockerfile**
+
+Cliquez ici : https://github.com/LaVitrineAgency/la-vitrine/new/main
+
+Nommez : `Dockerfile`
+
+Collez :
+```dockerfile
+FROM python:3.11-slim
+
+WORKDIR /app
+
+ENV PYTHONUNBUFFERED=1
+ENV ANTHROPIC_API_KEY=""
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY app.py .
+COPY templates/ templates/
+
+EXPOSE 5000
+
+CMD ["python", "app.py"]
+```
+
+Cliquez **"Commit changes"** ✅
+
+---
+
+**Fichier 4 : docker-compose.yml**
+
+Cliquez ici : https://github.com/LaVitrineAgency/la-vitrine/new/main
+
+Nommez : `docker-compose.yml`
+
+Collez :
+```yaml
+version: '3.8'
+
+services:
+  la-vitrine:
+    build: .
+    container_name: la-vitrine
+    ports:
+      - "5000:5000"
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    restart: unless-stopped
+```
+
+Cliquez **"Commit changes"** ✅
+
+---
+
+**Fichier 5 : templates/index.html**
+
+Cliquez ici : https://github.com/LaVitrineAgency/la-vitrine/new/main
+
+Nommez : `templates/index.html`
+
+Collez le contenu du fichier HTML (c'est long, je vais le lire) :
