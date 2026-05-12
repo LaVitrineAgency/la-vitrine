@@ -52,7 +52,6 @@ Retourne un tableau JSON de 16 objets UNIQUEMENT."""
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
 import os
 
 if __name__ == "__main__":
