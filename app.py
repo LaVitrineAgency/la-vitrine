@@ -163,3 +163,6 @@ Retourne un tableau JSON de 16 objets UNIQUEMENT."""
 
 
 logger.info("All routes registered — app ready")
+@app.route('/health')
+def health():
+    return 'OK', 200
