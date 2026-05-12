@@ -16,6 +16,7 @@ logger.info("Starting la-vitrine app — importing dependencies…")
 
 try:
     from flask import Flask, render_template, request, jsonify
+    import traceback
     logger.info("Flask imported successfully")
 except Exception as e:
     logger.critical("Failed to import Flask: %s", e, exc_info=True)
@@ -51,6 +52,22 @@ except Exception as e:
 
 
 # ---------------------------------------------------------------------------
+# Global error handler
+# ---------------------------------------------------------------------------
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    """Catch-all handler — logs every unhandled exception with a full
+    traceback so the root cause is always visible in the logs."""
+    logger.error(
+        "Unhandled exception: %s\n%s",
+        e,
+        traceback.format_exc(),
+    )
+    return jsonify({'error': 'Internal server error', 'detail': str(e)}), 500
+
+
+# ---------------------------------------------------------------------------
 # Routes
 # ---------------------------------------------------------------------------
 
@@ -64,15 +81,38 @@ def health():
 @app.route('/')
 def index():
     logger.debug("Index route called")
-    new_uuid = str(uuid.uuid4())
-    return f'''<h2>La Vitrine</h2>
+    try:
+        new_uuid = str(uuid.uuid4())
+        logger.debug("Generated UUID: %s", new_uuid)
+        response = f'''<h2>La Vitrine</h2>
     <p>Lien client : <a href="/client/{new_uuid}">/client/{new_uuid}</a></p>'''
+        logger.debug("Index route rendered successfully")
+        return response
+    except Exception as e:
+        logger.error(
+            "Exception in index route: %s\n%s",
+            e,
+            traceback.format_exc(),
+        )
+        raise
 
 
 @app.route('/client/<client_uuid>')
 def client_form(client_uuid):
     logger.debug("Client form route called for uuid=%s", client_uuid)
-    return render_template('index.html', client_uuid=client_uuid)
+    try:
+        logger.debug("Attempting to render template 'index.html' for uuid=%s", client_uuid)
+        rendered = render_template('index.html', client_uuid=client_uuid)
+        logger.debug("Template 'index.html' rendered successfully for uuid=%s", client_uuid)
+        return rendered
+    except Exception as e:
+        logger.error(
+            "Exception rendering template for uuid=%s: %s\n%s",
+            client_uuid,
+            e,
+            traceback.format_exc(),
+        )
+        raise
 
 
 @app.route('/api/generate/<client_uuid>', methods=['POST'])
