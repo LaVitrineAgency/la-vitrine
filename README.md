@@ -1,2 +1,2 @@
 # la-vitrine
-Agent IA pour générer posts sociaux
+Votre présence en ligne, sans y penser | Contenu & Communication
