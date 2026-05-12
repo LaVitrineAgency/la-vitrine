@@ -1,99 +1,78 @@
-Let's go! 🚀
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>La Vitrine - Brief LinkedIn</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; }
+        h1 { color: #6c63ff; }
+        input, textarea, select { width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        button { background: #6c63ff; color: white; padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer; width: 100%; font-size: 16px; }
+        .post { background: #f9f9f9; padding: 16px; margin: 12px 0; border-radius: 8px; border-left: 4px solid #6c63ff; }
+    </style>
+</head>
+<body>
+    <h1>🎯 La Vitrine</h1>
+    <p>Remplissez ce formulaire pour générer vos 16 posts LinkedIn</p>
 
-**Je vais créer les fichiers directement sur GitHub.**
+    <label>Nom / Prénom</label>
+    <input type="text" id="nom" placeholder="Marie Dupont" />
 
-Vous allez voir des liens pour créer chaque fichier. Cliquez et confirmez.
+    <label>Secteur d'activité</label>
+    <input type="text" id="secteur" placeholder="Coaching, Consulting..." />
 
-**Fichier 1 : app.py**
+    <label>Offres / Services</label>
+    <textarea id="offres" rows="3" placeholder="Décrivez vos offres..."></textarea>
 
-Cliquez ici pour créer : https://github.com/LaVitrineAgency/la-vitrine/new/main
+    <label>Résultats / Promesse client</label>
+    <textarea id="resultats" rows="3" placeholder="Ex: Je double votre CA en 6 mois..."></textarea>
 
-Dans le champ "Name your file", écrivez : `app.py`
+    <label>Ton de communication</label>
+    <select id="ton">
+        <option>Inspirant / Motivant</option>
+        <option>Expert / Autorité</option>
+        <option>Storytelling / Personnel</option>
+        <option>Humour / Décalé</option>
+    </select>
 
-Puis collez ce code dans l'éditeur :
+    <button onclick="generer()">✨ Générer mes 16 posts</button>
 
-Collez ce code, puis cliquez **"Commit changes"** ✅
+    <div id="resultats-posts"></div>
 
----
+    <script>
+        async function generer() {
+            const uuid = window.location.pathname.split('/').pop();
+            const btn = document.querySelector('button');
+            btn.textContent = '⏳ Génération en cours...';
+            btn.disabled = true;
 
-**Fichier 2 : requirements.txt**
+            const res = await fetch(`/api/generate/${uuid}`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    nom: document.getElementById('nom').value,
+                    secteur: document.getElementById('secteur').value,
+                    offres: document.getElementById('offres').value,
+                    resultats: document.getElementById('resultats').value,
+                    ton: document.getElementById('ton').value
+                })
+            });
 
-Cliquez ici : https://github.com/LaVitrineAgency/la-vitrine/new/main
+            const data = await res.json();
+            btn.textContent = '✨ Générer mes 16 posts';
+            btn.disabled = false;
 
-Nommez : `requirements.txt`
-
-Collez :
-```
-flask==3.0.0
-anthropic>=0.100.0
-```
-
-Cliquez **"Commit changes"** ✅
-
----
-
-**Fichier 3 : Dockerfile**
-
-Cliquez ici : https://github.com/LaVitrineAgency/la-vitrine/new/main
-
-Nommez : `Dockerfile`
-
-Collez :
-```dockerfile
-FROM python:3.11-slim
-
-WORKDIR /app
-
-ENV PYTHONUNBUFFERED=1
-ENV ANTHROPIC_API_KEY=""
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    && rm -rf /var/lib/apt/lists/*
-
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY app.py .
-COPY templates/ templates/
-
-EXPOSE 5000
-
-CMD ["python", "app.py"]
-```
-
-Cliquez **"Commit changes"** ✅
-
----
-
-**Fichier 4 : docker-compose.yml**
-
-Cliquez ici : https://github.com/LaVitrineAgency/la-vitrine/new/main
-
-Nommez : `docker-compose.yml`
-
-Collez :
-```yaml
-version: '3.8'
-
-services:
-  la-vitrine:
-    build: .
-    container_name: la-vitrine
-    ports:
-      - "5000:5000"
-    environment:
-      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
-    restart: unless-stopped
-```
-
-Cliquez **"Commit changes"** ✅
-
----
-
-**Fichier 5 : templates/index.html**
-
-Cliquez ici : https://github.com/LaVitrineAgency/la-vitrine/new/main
-
-Nommez : `templates/index.html`
-
-Collez le contenu du fichier HTML (c'est long, je vais le lire) :
+            if (data.posts) {
+                document.getElementById('resultats-posts').innerHTML =
+                    data.posts.map(p => `
+                        <div class="post">
+                            <strong>Post ${p.post_id} — ${p.ton}</strong>
+                            <p>${p.contenu}</p>
+                            <small>🖼️ ${p.prompt_image}</small>
+                        </div>
+                    `).join('');
+            }
+        }
+    </script>
+</body>
+</html>
