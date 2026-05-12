@@ -160,9 +160,3 @@ Retourne un tableau JSON de 16 objets UNIQUEMENT."""
     except Exception as e:
         logger.exception("Unhandled error in /api/generate/%s: %s", client_uuid, e)
         return jsonify({'error': str(e)}), 500
-
-
-logger.info("All routes registered — app ready")
-@app.route('/health')
-def health():
-    return 'OK', 200
