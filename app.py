@@ -51,8 +51,7 @@ Retourne un tableau JSON de 16 objets UNIQUEMENT."""
         return jsonify({'success': True, 'client_uuid': client_uuid, 'posts': posts})
 
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
-import os
+        return jsonify({'error': str(e)}), 500import os
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
