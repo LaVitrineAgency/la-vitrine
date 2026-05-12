@@ -3,6 +3,7 @@ import anthropic
 import os
 import json
 import uuid
+import re
 
 app = Flask(__name__)
 
@@ -20,6 +21,7 @@ def client_form(client_uuid):
 def generate(client_uuid):
     try:
         data = request.json
+
         api_key = os.getenv('ANTHROPIC_API_KEY')
         if not api_key:
             return jsonify({'error': 'ANTHROPIC_API_KEY manquante'}), 400
@@ -44,17 +46,21 @@ Retourne un tableau JSON de 16 objets UNIQUEMENT."""
         )
 
         response_text = message.content[0].text
-        import re
+
+        # Extraction du JSON dans la réponse
         json_match = re.search(r'\[[\s\S]*\]', response_text)
         posts = json.loads(json_match.group()) if json_match else []
 
-        return jsonify({'success': True, 'client_uuid': client_uuid, 'posts': posts})
+        return jsonify({
+            'success': True,
+            'client_uuid': client_uuid,
+            'posts': posts
+        })
 
     except Exception as e:
-        return jsonify({'error': str(e)}), 5000
-        
-import os
+        return jsonify({'error': str(e)}), 500
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port="$PORT")
+    app.run(host="0.0.0.0", port=port)
