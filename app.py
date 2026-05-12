@@ -51,7 +51,7 @@ Retourne un tableau JSON de 16 objets UNIQUEMENT."""
         return jsonify({'success': True, 'client_uuid': client_uuid, 'posts': posts})
 
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': str(e)}), 5000
         
 import os
 
