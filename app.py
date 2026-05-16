@@ -38,7 +38,7 @@ def test_visuel(client_uuid):
 
         client = anthropic.Anthropic(api_key=os.getenv('ANTHROPIC_API_KEY'))
         message = client.messages.create(
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-5",
             max_tokens=1000,
             messages=[{
                 "role": "user",
