@@ -1217,7 +1217,46 @@ function updatePriceSummary() {
 }
 
 async function demanderTest() {
-  alert('✨ Votre visuel de test est en cours de création ! Vous le recevrez dans votre boîte Drive sous 24h.');
+  const uuid = window.location.pathname.split('/').pop() || 'test';
+  const email = document.getElementById('email').value;
+  const prenom = document.getElementById('prenom').value;
+  const nom = document.getElementById('nom').value;
+  
+  if (!email || !prenom) {
+    alert('⚠️ Merci de remplir au minimum votre prénom et email à l\'étape 1');
+    return;
+  }
+  
+  const payload = {
+    email: email,
+    nom: prenom + ' ' + nom,
+    secteur: document.getElementById('secteur').value,
+    offre: document.getElementById('offre').value,
+    style: document.getElementById('style-selected').value,
+    couleurs: [
+      document.getElementById('color1-ral').value + ' ' + document.getElementById('color1-desc').value,
+      document.getElementById('color2-ral').value + ' ' + document.getElementById('color2-desc').value,
+      document.getElementById('colors-libre').value
+    ].filter(s => s.trim()).join(' | '),
+    intention: document.getElementById('intention-offre').value
+  };
+  
+  try {
+    const res = await fetch(`/api/test-visuel/${uuid}`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (data.success) {
+      alert('✨ Parfait ! Votre demande est envoyée. Vous recevrez votre visuel de test par email sous 24h.');
+    } else {
+      alert('❌ Erreur : ' + (data.error || 'inconnue'));
+    }
+  } catch(e) {
+    alert('❌ Erreur de connexion');
+  }
+}
 }
 
 async function payerEtGenerer() {
