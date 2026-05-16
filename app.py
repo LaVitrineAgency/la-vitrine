@@ -8,7 +8,7 @@ import resend
 app = Flask(__name__)
 
 resend.api_key = os.getenv('RESEND_API_KEY')
-THIERRY_EMAIL = "ton@email.com"  # ← mets ton email ici
+THIERRY_EMAIL = "lavitrine.agency@gmail.com"  # ← mets ton email ici
 
 @app.route('/health')
 def health():
