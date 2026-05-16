@@ -8,7 +8,7 @@ import resend
 app = Flask(__name__)
 
 resend.api_key = os.getenv('RESEND_API_KEY')
-THIERRY_EMAIL = "lavitrine.agency@gmail.com"  # ← mets ton email ici
+THIERRY_EMAIL = "lavitrine.agency@gmail.com"
 
 @app.route('/health')
 def health():
@@ -36,71 +36,32 @@ def test_visuel(client_uuid):
         couleurs = data.get('couleurs', '')
         intention = data.get('intention', '')
 
-        # Générer le prompt Runway via Claude
         client = anthropic.Anthropic(api_key=os.getenv('ANTHROPIC_API_KEY'))
         message = client.messages.create(
             model="claude-sonnet-4-20250514",
             max_tokens=1000,
             messages=[{
                 "role": "user",
-                "content": f"""Génère un prompt DÉTAILLÉ pour Runway ML pour créer un visuel LinkedIn professionnel.
-
-Client : {client_nom}
-Secteur : {secteur}
-Offre : {offre}
-Style visuel : {style}
-Couleurs : {couleurs}
-Intention : {intention}
-
-Le prompt doit être en anglais, ultra détaillé, inclure : composition, éclairage, ambiance, palette, style photographique, texte à intégrer.
-Retourne UNIQUEMENT le prompt, rien d'autre."""
+                "content": f"Genere un prompt detaille pour Runway ML pour creer un visuel LinkedIn professionnel. Client: {client_nom}. Secteur: {secteur}. Offre: {offre}. Style visuel: {style}. Couleurs: {couleurs}. Intention: {intention}. Le prompt doit etre en anglais, ultra detaille, inclure composition, eclairage, ambiance, palette, style photographique, texte a integrer. Retourne UNIQUEMENT le prompt."
             }]
         )
         prompt_runway = message.content[0].text
 
-        # Email au client
         resend.Emails.send({
             "from": "La Vitrine <onboarding@resend.dev>",
             "to": client_email,
-            "subject": "✨ Votre visuel de test est en cours de création !",
-            "html": f"""
-            <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px">
-                <h2 style="color:#1A1714">Bonjour {client_nom} ! 👋</h2>
-                <p>Votre visuel de test <strong>La Vitrine</strong> est en cours de création.</p>
-                <p>Vous le recevrez dans votre dossier Drive sous <strong>24h</strong>.</p>
-                <div style="background:#FDF9F3;border-left:4px solid #C9A96E;padding:16px;margin:20px 0;border-radius:4px">
-                    <p style="color:#8C8480;font-size:14px;margin:0">Notre équipe travaille sur un visuel personnalisé basé sur votre brief.</p>
-                </div>
-                <p>À très vite,<br><strong>L'équipe La Vitrine</strong></p>
-            </div>
-            """
+            "subject": "Votre visuel de test est en cours de creation",
+            "html": f"<div style='font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px'><h2>Bonjour {client_nom}</h2><p>Votre visuel de test La Vitrine est en cours de creation.</p><p>Vous le recevrez sous 24h.</p><p>L'equipe La Vitrine</p></div>"
         })
 
-        # Notification à Thierry
         resend.Emails.send({
             "from": "La Vitrine <onboarding@resend.dev>",
             "to": THIERRY_EMAIL,
-            "subject": f"🎨 Nouveau visuel de test demandé — {client_nom}",
-            "html": f"""
-            <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px">
-                <h2>Nouveau client — Visuel de test à créer !</h2>
-                <p><strong>Client :</strong> {client_nom}</p>
-                <p><strong>Email :</strong> {client_email}</p>
-                <p><strong>Secteur :</strong> {secteur}</p>
-                <p><strong>Offre :</strong> {offre}</p>
-                <p><strong>Style :</strong> {style}</p>
-                <p><strong>Couleurs :</strong> {couleurs}</p>
-                <p><strong>Intention :</strong> {intention}</p>
-                <div style="background:#f5f5f5;padding:16px;border-radius:8px;margin:20px 0">
-                    <h3>🎬 Prompt Runway ML :</h3>
-                    <p style="font-family:monospace;font-size:13px">{prompt_runway}</p>
-                </div>
-                <p>→ Crée le visuel sur Runway et dépose-le dans le Drive du client !</p>
-            </div>
-            """
+            "subject": f"Nouveau visuel de test - {client_nom}",
+            "html": f"<div style='font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px'><h2>Nouveau client</h2><p><b>Client:</b> {client_nom}</p><p><b>Email:</b> {client_email}</p><p><b>Secteur:</b> {secteur}</p><p><b>Offre:</b> {offre}</p><p><b>Style:</b> {style}</p><p><b>Couleurs:</b> {couleurs}</p><p><b>Intention:</b> {intention}</p><div style='background:#f5f5f5;padding:16px;border-radius:8px;margin:20px 0'><h3>Prompt Runway ML:</h3><p style='font-family:monospace;font-size:13px'>{prompt_runway}</p></div></div>"
         })
 
-        return jsonify({'success': True, 'message': 'Emails envoyés !'})
+        return jsonify({'success': True, 'message': 'Emails envoyes'})
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -115,15 +76,24 @@ def generate(client_uuid):
 
         client = anthropic.Anthropic(api_key=api_key)
 
-        prompt = f"""Génère 16 posts LinkedIn pour :
-- Nom : {data.get('nom', '')}
-- Secteur : {data.get('secteur', '')}
-- Offres/Services : {data.get('offres', '')}
-- Résultats/Promesse : {data.get('resultats', '')}
-- Ton : {data.get('ton', '')}
-- Couleurs marque : {data.get('couleurs', '')}
-- Style : {data.get('style', '')}
-- Intention : {data.get('intention', '')}
+        prompt = f"Genere 16 posts LinkedIn pour : Nom: {data.get('nom', '')}. Secteur: {data.get('secteur', '')}. Offre: {data.get('offre', '')}. Benefices: {data.get('benefices', '')}. Ton: {data.get('ton', '')}. Couleurs: {data.get('couleurs', '')}. Style: {data.get('style', '')}. Intention: {data.get('intention', '')}. 4 posts par ton : Inspirant, Expert, Storytelling, Humour. Pour chaque post retourne JSON avec : post_id, ton, contenu, prompt_image, hashtags. Retourne un tableau JSON de 16 objets UNIQUEMENT."
 
-4 posts par ton : Inspirant, Expert/Autorité, Storytelling, Humour.
-Pour chaque post retourne JSON avec : post_id, ton, contenu, prompt_image, hashtags.
+        message = client.messages.create(
+            model="claude-sonnet-4-20250514",
+            max_tokens=8000,
+            messages=[{"role": "user", "content": prompt}]
+        )
+
+        response_text = message.content[0].text
+        import re
+        json_match = re.search(r'\[[\s\S]*\]', response_text)
+        posts = json.loads(json_match.group()) if json_match else []
+
+        return jsonify({'success': True, 'client_uuid': client_uuid, 'posts': posts})
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+if __name__ == '__main__':
+    port = int(os.getenv('PORT', 8080))
+    app.run(host='0.0.0.0', port=port, debug=False)
