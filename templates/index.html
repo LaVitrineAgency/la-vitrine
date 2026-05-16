@@ -1,62 +1,1336 @@
-## 📋 Formulaire 5 étapes
-1. **Identité** : Prénom, Nom, Email, Téléphone (optionnel), LinkedIn, Entreprise, Secteur
-2. **Offre** : Produit/service, Prix, Promo, Bénéfices, CTA, Note d'intention ✦
-3. **Message** : Accroche, Message clé, Intention (toggle IA), Sujets à éviter, Ton (4 options)
-4. **Visuel** : Couleurs (RAL/Pantone/description libre), Style visuel, Upload logo, Exemples
-5. **Paiement** : Choix forfait, Langues (+30%/langue), Récapitulatif prix, Stripe, Bouton test visuel
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Vitrine — Brief Créatif</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #FAF7F2;
+  --dark: #1A1714;
+  --gold: #C9A96E;
+  --gold-light: #E8D5B0;
+  --muted: #8C8480;
+  --border: #E8E2D9;
+  --step-active: #C9A96E;
+  --step-done: #1A1714;
+  --step-inactive: #D4CEC8;
+}
 
-## 💰 Grille tarifaire
-| Forfait | Prix | Contenu |
-|---------|------|---------|
-| Essentiel | 97€/mois | 8 posts + 4 visuels |
-| Pro | 197€/mois | 16 posts + 8 visuels |
-| Premium | 347€/mois | 16 posts + 16 visuels |
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-- Langue supplémentaire : **+30% par langue**
-- Langues dispo : FR (inclus), EN, ES, DE, IT, NL
-- **Sans engagement** — résiliable à tout moment
+body {
+  background: var(--cream);
+  font-family: 'DM Sans', sans-serif;
+  color: var(--dark);
+  min-height: 100vh;
+}
 
-## 🎤 Tons de communication
-- 🌟 Inspirant / Motivant
-- 🎯 Expert / Autorité
-- 📖 Storytelling / Personnel
-- 😄 Humour / Décalé
+/* Header */
+.header {
+  background: var(--dark);
+  padding: 2rem 2rem 1.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.header::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -20%;
+  width: 140%; height: 200%;
+  background: radial-gradient(ellipse at 60% 40%, rgba(201,169,110,0.15) 0%, transparent 60%);
+  pointer-events: none;
+}
+.header-label {
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+.header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  color: white;
+  font-weight: 400;
+  letter-spacing: -0.5px;
+}
+.header p {
+  color: rgba(255,255,255,0.45);
+  font-size: 13px;
+  margin-top: 0.4rem;
+  font-weight: 300;
+}
 
-## 🎨 Design formulaire
-- Palette : crème (#FAF7F2) + doré (#C9A96E) + dark (#1A1714)
-- Fonts : Playfair Display + DM Sans
-- Champs obligatoires marqués ✦ doré
-- Toggles IA sur champs créatifs
-- Calcul prix temps réel sur sélection langues
+/* Progress */
+.progress-wrap {
+  background: white;
+  border-bottom: 1px solid var(--border);
+  padding: 1.25rem 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.steps {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  max-width: 560px;
+  margin: 0 auto;
+}
+.step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  cursor: pointer;
+}
+.step-num {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+  border: 1.5px solid var(--step-inactive);
+  color: var(--step-inactive);
+}
+.step.active .step-num {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: white;
+}
+.step.done .step-num {
+  background: var(--dark);
+  border-color: var(--dark);
+  color: white;
+}
+.step-label {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 400;
+  white-space: nowrap;
+}
+.step.active .step-label { color: var(--dark); font-weight: 500; }
+.step.done .step-label { color: var(--dark); }
+.step-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+  margin: 0 8px;
+}
+.step-line.done { background: var(--dark); }
 
-## 💾 Google Drive Integration
-- Service account : la-vitrine-bot@la-vitrine-496114.iam.gserviceaccount.com
-- Folder ID : 1RGbcMs6m5XWMo2YTF3Fvm3e0QCJjo2Dk
-- Structure : /La Vitrine/Clients/[Client Name]/
+/* Form */
+.form-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
 
-## 💳 Paiement
-- **Stripe** (à connecter avec clé API)
-- Bouton test visuel gratuit avant paiement
-- Mention sans engagement visible
+.step-panel { display: none; }
+.step-panel.active { display: block; animation: fadeIn 0.35s ease; }
 
-## 📊 Output CSV
-Post ID, Ton, Contenu, Prompt Image, Hashtags
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
-## 🐳 Docker
-```bash
-docker compose up
-docker build -t la-vitrine:latest .
-```
+.step-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: var(--dark);
+  margin-bottom: 0.3rem;
+}
+.step-subtitle {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 300;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
 
-## 📝 Prochaines étapes
-1. ⏳ Remplacer templates/index.html dans GitHub par nouveau formulaire 5 étapes
-2. ⏳ Connecter Stripe (clé API)
-3. ⏳ Tester flow complet avec 3 clients gratuits
-4. ⏳ Collecter témoignages + visuels pour page de vente
-5. ⏳ Automatiser envoi email avec lien Drive au client
+.field { margin-bottom: 1.4rem; }
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.field input, .field textarea, .field select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--dark);
+  background: white;
+  outline: none;
+  transition: border-color 0.2s;
+  appearance: none;
+}
+.field input:focus, .field textarea:focus, .field select:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201,169,110,0.12);
+}
+.field textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
 
-## 💡 Stratégie commerciale
-- 3 clients test GRATUITS pour valider le service
-- Cible : dirigeants de PME (valeur temps élevée)
-- Argument : clé en main, sans engagement, mieux ciblé grâce au formulaire
-- Visuel exemple : toilettage canin Séverine (référence qualité)
+.row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* Toggle AI */
+.ai-field { margin-bottom: 1.4rem; }
+.ai-field > label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.ai-toggle {
+  display: flex;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.ai-toggle button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: none;
+  font-size: 12px;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  color: var(--muted);
+  transition: all 0.2s;
+  font-weight: 400;
+}
+.ai-toggle button.selected {
+  background: var(--dark);
+  color: white;
+  font-weight: 500;
+}
+.ai-input { display: none; }
+.ai-input.visible { display: block; animation: fadeIn 0.2s ease; }
+.ai-placeholder {
+  padding: 10px 14px;
+  background: #F5F2ED;
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--muted);
+  font-style: italic;
+  display: none;
+}
+.ai-placeholder.visible { display: block; }
+
+/* Style visuel */
+.style-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 1.4rem;
+}
+.style-option {
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: white;
+}
+.style-option:hover { border-color: var(--gold-light); }
+.style-option.selected { border-color: var(--gold); background: #FDF9F3; }
+.style-option .icon { font-size: 20px; margin-bottom: 4px; }
+.style-option .name { font-size: 12px; font-weight: 500; color: var(--dark); }
+.style-option .desc { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+/* Ton */
+.ton-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 1.4rem;
+}
+.ton-option {
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: white;
+}
+.ton-option:hover { border-color: var(--gold-light); }
+.ton-option.selected { border-color: var(--gold); background: #FDF9F3; }
+.ton-option .ton-name { font-size: 13px; font-weight: 500; color: var(--dark); }
+.ton-option .ton-desc { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+/* Color picker */
+.color-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 1.4rem;
+}
+.color-swatch {
+  width: 44px; height: 44px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+}
+.color-swatch input[type="color"] {
+  position: absolute;
+  top: -4px; left: -4px;
+  width: 52px; height: 52px;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+.color-swatch-label { font-size: 11px; color: var(--muted); }
+.color-hex { font-size: 12px; font-weight: 500; color: var(--dark); }
+
+/* Upload */
+.upload-zone {
+  border: 1.5px dashed var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: white;
+  margin-bottom: 1.4rem;
+}
+.upload-zone:hover { border-color: var(--gold); background: #FDF9F3; }
+.upload-zone input { display: none; }
+.upload-icon { font-size: 24px; margin-bottom: 6px; }
+.upload-text { font-size: 13px; color: var(--muted); }
+.upload-text strong { color: var(--dark); }
+
+/* Buttons */
+.nav-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+.btn-back {
+  padding: 12px 20px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: white;
+  color: var(--muted);
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-back:hover { border-color: var(--dark); color: var(--dark); }
+.btn-next {
+  flex: 1;
+  padding: 14px;
+  background: var(--dark);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.3px;
+}
+.btn-next:hover { background: #2D2926; }
+.btn-generate {
+  flex: 1;
+  padding: 14px;
+  background: var(--gold);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-generate:hover { background: #B8935A; }
+
+/* Pricing */
+.forfait-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-bottom: 1.4rem;
+}
+.forfait-card {
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.forfait-card:hover { border-color: var(--gold-light); }
+.forfait-card.selected { border-color: var(--gold); background: #FDF9F3; }
+.forfait-card.selected .forfait-badge { background: var(--gold); color: white; }
+.forfait-left { display: flex; align-items: center; gap: 12px; }
+.forfait-radio {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.forfait-card.selected .forfait-radio {
+  border-color: var(--gold);
+  background: var(--gold);
+}
+.forfait-card.selected .forfait-radio::after {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: white;
+}
+.forfait-name { font-size: 14px; font-weight: 500; color: var(--dark); }
+.forfait-detail { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.forfait-price { font-size: 18px; font-weight: 700; color: var(--dark); font-family: 'Playfair Display', serif; }
+.forfait-price span { font-size: 11px; font-weight: 400; color: var(--muted); font-family: 'DM Sans', sans-serif; }
+.forfait-badge {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: var(--border);
+  color: var(--muted);
+  font-weight: 500;
+  margin-left: 8px;
+}
+
+.langues-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 1.4rem;
+}
+.langue-option {
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: white;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--dark);
+}
+.langue-option:hover { border-color: var(--gold-light); }
+.langue-option.selected { border-color: var(--gold); background: #FDF9F3; }
+.langue-option.disabled { opacity: 0.4; cursor: default; }
+.langue-check {
+  width: 16px; height: 16px;
+  border-radius: 4px;
+  border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 10px;
+  transition: all 0.2s;
+}
+.langue-option.selected .langue-check {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: white;
+}
+
+.price-summary {
+  background: var(--dark);
+  border-radius: 10px;
+  padding: 1.2rem 1.4rem;
+  margin-bottom: 1.4rem;
+  color: white;
+}
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 6px;
+  color: rgba(255,255,255,0.6);
+}
+.price-row.total {
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+  border-top: 1px solid rgba(255,255,255,0.15);
+  padding-top: 10px;
+  margin-top: 6px;
+  margin-bottom: 0;
+  font-family: 'Playfair Display', serif;
+}
+.price-row.total span:last-child { color: var(--gold); }
+
+.stripe-box {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.2rem;
+  margin-bottom: 1.4rem;
+}
+.stripe-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 1rem;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--dark);
+}
+.stripe-secure {
+  font-size: 10px;
+  color: var(--muted);
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.card-field {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 8px;
+  font-family: 'DM Sans', sans-serif;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.card-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.btn-test {
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  color: var(--gold);
+  border: 1.5px solid var(--gold);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 10px;
+}
+.btn-test:hover { background: #FDF9F3; }
+.sans-engagement {
+  text-align: center;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.sans-engagement strong { color: var(--dark); }
+
+.required-legend {
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+.required-legend span {
+  color: var(--gold);
+  font-style: normal;
+  font-size: 14px;
+}
+.field label .req {
+  color: var(--gold);
+  font-size: 14px;
+  margin-left: 2px;
+  font-style: normal;
+}
+.field input.error, .field textarea.error, .field select.error {
+  border-color: #E07070;
+  box-shadow: 0 0 0 3px rgba(224,112,112,0.1);
+}
+.field .error-msg {
+  font-size: 11px;
+  color: #E07070;
+  margin-top: 4px;
+  display: none;
+}
+.field.has-error .error-msg { display: block; }
+.color-desc-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 1.4rem;
+}
+.color-entry {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+}
+.color-entry-label {
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+.color-entry input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--dark);
+  background: var(--cream);
+  outline: none;
+  margin-bottom: 6px;
+}
+.color-entry input:focus { border-color: var(--gold); }
+.intention-box {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.2rem;
+  margin-bottom: 1.4rem;
+}
+.intention-box .intention-icon {
+  font-size: 20px;
+  margin-bottom: 6px;
+}
+.intention-box label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.intention-box textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--dark);
+  background: var(--cream);
+  outline: none;
+  resize: vertical;
+  min-height: 100px;
+  line-height: 1.5;
+}
+.intention-box textarea:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,169,110,0.12); }
+.intention-hint {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 6px;
+  font-style: italic;
+}
+.section-label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 500;
+  margin-bottom: 1rem;
+  margin-top: 1.5rem;
+}
+
+/* Results */
+.results { display: none; }
+.results.visible { display: block; animation: fadeIn 0.4s ease; }
+.result-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.2rem;
+  margin-bottom: 1rem;
+}
+.result-ton {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+.result-content { font-size: 14px; line-height: 1.6; color: var(--dark); }
+.result-prompt {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  font-style: italic;
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem;
+  display: none;
+}
+.loading.visible { display: block; }
+.loading-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+  margin: 0 3px;
+  animation: bounce 1.2s infinite;
+}
+.loading-dot:nth-child(2) { animation-delay: 0.2s; }
+.loading-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-8px); }
+}
+.loading p { color: var(--muted); font-size: 13px; margin-top: 1rem; font-style: italic; }
+
+@media (max-width: 480px) {
+  .row-2 { grid-template-columns: 1fr; }
+  .style-grid { grid-template-columns: repeat(2, 1fr); }
+  .steps .step-label { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-label">La Vitrine Agency</div>
+  <h1>Brief Créatif</h1>
+  <p>Votre brief créatif personnalisé</p>
+</div>
+
+<div class="progress-wrap">
+  <div class="steps">
+    <div class="step active" onclick="goToStep(1)" id="step-indicator-1">
+      <div class="step-num">1</div>
+      <div class="step-label">Identité</div>
+    </div>
+    <div class="step-line" id="line-1"></div>
+    <div class="step" onclick="goToStep(2)" id="step-indicator-2">
+      <div class="step-num">2</div>
+      <div class="step-label">Offre</div>
+    </div>
+    <div class="step-line" id="line-2"></div>
+    <div class="step" onclick="goToStep(3)" id="step-indicator-3">
+      <div class="step-num">3</div>
+      <div class="step-label">Message</div>
+    </div>
+    <div class="step-line" id="line-3"></div>
+    <div class="step" onclick="goToStep(4)" id="step-indicator-4">
+      <div class="step-num">4</div>
+      <div class="step-label">Visuel</div>
+    </div>
+    <div class="step-line" id="line-4"></div>
+    <div class="step" onclick="goToStep(5)" id="step-indicator-5">
+      <div class="step-num">5</div>
+      <div class="step-label">Paiement</div>
+    </div>
+  </div>
+</div>
+
+<div class="form-container">
+
+  <!-- ÉTAPE 1 -->
+  <div class="step-panel active" id="panel-1">
+    <div class="step-title">Votre identité</div>
+    <div class="step-subtitle">Les informations de base pour personnaliser votre contenu.</div>
+    <div class="required-legend"><span>✦</span> Champ obligatoire</div>
+
+    <div class="row-2">
+      <div class="field">
+        <label>Prénom <span class="req">✦</span></label>
+        <input type="text" id="prenom" placeholder="Marie" required />
+        <div class="error-msg">Ce champ est requis</div>
+      </div>
+      <div class="field">
+        <label>Nom <span class="req">✦</span></label>
+        <input type="text" id="nom" placeholder="Dupont" required />
+        <div class="error-msg">Ce champ est requis</div>
+      </div>
+    </div>
+    <div class="row-2">
+      <div class="field">
+        <label>Email <span class="req">✦</span></label>
+        <input type="email" id="email" placeholder="marie@exemple.fr" required />
+        <div class="error-msg">Ce champ est requis</div>
+      </div>
+      <div class="field">
+        <label>Téléphone <span style="font-size:10px;color:var(--muted);font-weight:300;text-transform:none;letter-spacing:0">(optionnel)</span></label>
+        <input type="tel" id="tel" placeholder="+33 6 12 34 56 78" />
+      </div>
+    </div>
+    <div class="field">
+      <label>Profil LinkedIn <span class="req">✦</span></label>
+      <input type="url" id="linkedin" placeholder="https://linkedin.com/in/marie-dupont" required />
+      <div class="error-msg">Ce champ est requis</div>
+    </div>
+    <div class="row-2">
+      <div class="field">
+        <label>Nom de l'entreprise <span class="req">✦</span></label>
+        <input type="text" id="entreprise" placeholder="Marie Dupont Conseil" required />
+        <div class="error-msg">Ce champ est requis</div>
+      </div>
+      <div class="field">
+        <label>Secteur d'activité <span class="req">✦</span></label>
+        <input type="text" id="secteur" placeholder="Coaching, Consulting..." required />
+        <div class="error-msg">Ce champ est requis</div>
+      </div>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn-next" onclick="nextStep(1)">Continuer →</button>
+    </div>
+  </div>
+
+  <!-- ÉTAPE 2 -->
+  <div class="step-panel" id="panel-2">
+    <div class="step-title">L'offre du moment</div>
+    <div class="step-subtitle">Quel produit ou service souhaitez-vous mettre en avant ce mois-ci ?</div>
+    <div class="required-legend"><span>✦</span> Champ obligatoire</div>
+
+    <div class="field">
+      <label>Nom de l'offre / produit <span class="req">✦</span></label>
+      <input type="text" id="offre" placeholder="Ex : Coaching Dirigeant 3 mois" required />
+      <div class="error-msg">Ce champ est requis</div>
+    </div>
+    <div class="row-2">
+      <div class="field">
+        <label>Prix <span style="font-size:10px;color:var(--muted);font-weight:300;text-transform:none;letter-spacing:0">(optionnel)</span></label>
+        <input type="text" id="prix" placeholder="Ex : 1 500 €" />
+      </div>
+      <div class="field">
+        <label>Promotion en cours ?</label>
+        <select id="promo">
+          <option value="">Non</option>
+          <option value="oui">Oui</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label>Bénéfices clés de l'offre <span class="req">✦</span></label>
+      <textarea id="benefices" placeholder="Ex : Clarté de vision, plan d'action concret, gain de temps..." required></textarea>
+      <div class="error-msg">Ce champ est requis</div>
+    </div>
+    <div class="field">
+      <label>Call-to-action souhaité <span class="req">✦</span></label>
+      <select id="cta">
+        <option>Prendre rendez-vous</option>
+        <option>Me contacter</option>
+        <option>Visiter mon site</option>
+        <option>Télécharger</option>
+        <option>S'inscrire</option>
+        <option>Acheter</option>
+      </select>
+    </div>
+
+    <div class="intention-box">
+      <div class="intention-icon">💡</div>
+      <label>Note d'intention <span class="req">✦</span></label>
+      <textarea id="intention-offre" placeholder="Ex : Ce mois-ci je veux mettre en avant ma nouvelle offre premium, insister sur la transformation vécue par mes clients, et montrer que je suis l'expert incontournable de mon secteur..." required></textarea>
+      <div class="intention-hint">Partagez librement ce que vous souhaitez transmettre, vos envies, vos priorités — l'IA s'en inspire pour créer du contenu qui vous ressemble vraiment.</div>
+      <div class="error-msg">Ce champ est requis</div>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn-back" onclick="prevStep(2)">← Retour</button>
+      <button class="btn-next" onclick="nextStep(2)">Continuer →</button>
+    </div>
+  </div>
+
+  <!-- ÉTAPE 3 -->
+  <div class="step-panel" id="panel-3">
+    <div class="step-title">Le message</div>
+    <div class="step-subtitle">Définissez ce que vous voulez dire — ou laissez l'IA créer pour vous.</div>
+
+    <div class="ai-field">
+      <label>Accroche principale</label>
+      <div class="ai-toggle">
+        <button class="selected" onclick="toggleAI('accroche', 'moi')">✍️ J'ai une idée</button>
+        <button onclick="toggleAI('accroche', 'ia')">✨ Je laisse l'IA créer</button>
+      </div>
+      <div class="ai-input visible" id="accroche-input">
+        <input type="text" id="accroche" placeholder="Ex : Chaque dirigeant mérite un cap clair." />
+      </div>
+      <div class="ai-placeholder" id="accroche-ia">L'IA créera une accroche percutante basée sur votre activité.</div>
+    </div>
+
+    <div class="ai-field">
+      <label>Message clé du mois</label>
+      <div class="ai-toggle">
+        <button class="selected" onclick="toggleAI('message', 'moi')">✍️ J'ai un message</button>
+        <button onclick="toggleAI('message', 'ia')">✨ Je laisse l'IA choisir</button>
+      </div>
+      <div class="ai-input visible" id="message-input">
+        <textarea id="message" placeholder="Ex : Ce mois-ci je veux parler de l'importance de déléguer pour mieux grandir..."></textarea>
+      </div>
+      <div class="ai-placeholder" id="message-ia">L'IA définira le message le plus pertinent selon votre offre du moment.</div>
+    </div>
+
+    <div class="ai-field">
+      <label>Note d'intention / Ambiance</label>
+      <div class="ai-toggle">
+        <button class="selected" onclick="toggleAI('intention', 'moi')">✍️ Je décris</button>
+        <button onclick="toggleAI('intention', 'ia')">✨ Je laisse l'IA décider</button>
+      </div>
+      <div class="ai-input visible" id="intention-input">
+        <textarea id="intention" placeholder="Ex : Je veux quelque chose de chaleureux et inspirant, qui montre que je suis accessible..."></textarea>
+      </div>
+      <div class="ai-placeholder" id="intention-ia">
+        <select id="ambiance" style="background:white;border:1px solid var(--border);border-radius:6px;padding:8px 12px;width:100%;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--dark);outline:none;">
+          <option>Doux & bienveillant</option>
+          <option>Dynamique & énergisant</option>
+          <option>Luxe & raffiné</option>
+          <option>Naturel & authentique</option>
+          <option>Pro & structuré</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Sujets à éviter absolument</label>
+      <input type="text" id="eviter" placeholder="Ex : politique, religion, prix concurrents..." />
+    </div>
+
+    <div class="section-label">Ton de communication</div>
+    <div class="ton-grid">
+      <div class="ton-option selected" onclick="selectTon(this, 'inspirant')">
+        <div class="ton-name">🌟 Inspirant</div>
+        <div class="ton-desc">Motivez, donnez de l'élan</div>
+      </div>
+      <div class="ton-option" onclick="selectTon(this, 'expert')">
+        <div class="ton-name">🎯 Expert</div>
+        <div class="ton-desc">Affirmez votre autorité</div>
+      </div>
+      <div class="ton-option" onclick="selectTon(this, 'storytelling')">
+        <div class="ton-name">📖 Storytelling</div>
+        <div class="ton-desc">Racontez votre histoire</div>
+      </div>
+      <div class="ton-option" onclick="selectTon(this, 'humour')">
+        <div class="ton-name">😄 Humour</div>
+        <div class="ton-desc">Décalez, surprenez</div>
+      </div>
+    </div>
+    <input type="hidden" id="ton-selected" value="inspirant" />
+
+    <div class="nav-buttons">
+      <button class="btn-back" onclick="prevStep(3)">← Retour</button>
+      <button class="btn-next" onclick="nextStep(3)">Continuer →</button>
+    </div>
+  </div>
+
+  <!-- ÉTAPE 4 -->
+  <div class="step-panel" id="panel-4">
+    <div class="step-title">Identité visuelle</div>
+    <div class="step-subtitle">Définissez l'univers graphique de vos créations.</div>
+
+    <div class="section-label">Couleurs de la marque <span class="req" style="font-size:14px;color:var(--gold)">✦</span></div>
+    <div class="color-desc-row">
+      <div class="color-entry">
+        <div class="color-entry-label">Couleur principale</div>
+        <input type="text" id="color1-ral" placeholder="RAL 3015 / Pantone 705..." />
+        <input type="text" id="color1-desc" placeholder="Ex : Rose pâle, champagne..." />
+      </div>
+      <div class="color-entry">
+        <div class="color-entry-label">Couleur secondaire</div>
+        <input type="text" id="color2-ral" placeholder="RAL 9001 / #F5F0E8..." />
+        <input type="text" id="color2-desc" placeholder="Ex : Blanc cassé, ivoire..." />
+      </div>
+      <div class="color-entry">
+        <div class="color-entry-label">Couleur d'accent <span style="font-size:10px;font-weight:300;text-transform:none;letter-spacing:0">(optionnel)</span></div>
+        <input type="text" id="color3-ral" placeholder="RAL 1006 / #C9A96E..." />
+        <input type="text" id="color3-desc" placeholder="Ex : Doré, terracotta..." />
+      </div>
+      <div class="color-entry" style="background:#F5F2ED;border-style:dashed">
+        <div class="color-entry-label">Ou décrivez librement</div>
+        <input type="text" id="colors-libre" placeholder="Ex : teintes naturelles, chaleureuses, proches de la nature..." style="background:white" />
+      </div>
+    </div>
+
+    <div class="section-label">Style visuel</div>
+    <div class="style-grid">
+      <div class="style-option selected" onclick="selectStyle(this, 'doux')">
+        <div class="icon">🌸</div>
+        <div class="name">Doux</div>
+        <div class="desc">Pastel, rond, bienveillant</div>
+      </div>
+      <div class="style-option" onclick="selectStyle(this, 'dynamique')">
+        <div class="icon">⚡</div>
+        <div class="name">Dynamique</div>
+        <div class="desc">Vif, contrasté, audacieux</div>
+      </div>
+      <div class="style-option" onclick="selectStyle(this, 'luxe')">
+        <div class="icon">💎</div>
+        <div class="name">Luxe</div>
+        <div class="desc">Raffiné, sobre, élégant</div>
+      </div>
+      <div class="style-option" onclick="selectStyle(this, 'naturel')">
+        <div class="icon">🌿</div>
+        <div class="name">Naturel</div>
+        <div class="desc">Organique, chaleureux</div>
+      </div>
+      <div class="style-option" onclick="selectStyle(this, 'moderne')">
+        <div class="icon">🔲</div>
+        <div class="name">Moderne</div>
+        <div class="desc">Épuré, géométrique</div>
+      </div>
+      <div class="style-option" onclick="selectStyle(this, 'pro')">
+        <div class="icon">📊</div>
+        <div class="name">Pro</div>
+        <div class="desc">Structuré, corporate</div>
+      </div>
+    </div>
+    <input type="hidden" id="style-selected" value="doux" />
+
+    <div class="upload-zone" onclick="document.getElementById('logo-upload').click()">
+      <input type="file" id="logo-upload" accept="image/*" onchange="handleUpload(this, 'logo-name')" />
+      <div class="upload-icon">🖼️</div>
+      <div class="upload-text"><strong>Déposez votre logo</strong> ou cliquez pour parcourir</div>
+      <div id="logo-name" style="font-size:12px;color:var(--gold);margin-top:6px"></div>
+    </div>
+
+    <div class="ai-field">
+      <label>Exemples de visuels inspirants</label>
+      <div class="ai-toggle">
+        <button class="selected" onclick="toggleAI('visuels', 'moi')">🔗 J'ai des exemples</button>
+        <button onclick="toggleAI('visuels', 'ia')">✨ Je laisse l'IA choisir</button>
+      </div>
+      <div class="ai-input visible" id="visuels-input">
+        <input type="text" id="visuels" placeholder="Collez des liens vers des visuels que vous aimez..." />
+      </div>
+      <div class="ai-placeholder" id="visuels-ia">L'IA s'inspirera de votre style et secteur pour créer l'univers visuel.</div>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn-back" onclick="prevStep(4)">← Retour</button>
+      <button class="btn-next" onclick="nextStep(4)">Continuer →</button>
+    </div>
+  </div>
+
+  <!-- ÉTAPE 5 -->
+  <div class="step-panel" id="panel-5">
+    <div class="step-title">Forfait & Paiement</div>
+    <div class="step-subtitle">Choisissez votre formule — sans engagement, résiliable à tout moment.</div>
+
+    <div class="section-label">Choisissez votre forfait</div>
+    <div class="forfait-grid">
+      <div class="forfait-card" onclick="selectForfait(this, 97, 'Essentiel')">
+        <div class="forfait-left">
+          <div class="forfait-radio"></div>
+          <div>
+            <div class="forfait-name">Essentiel <span class="forfait-badge">Démarrer</span></div>
+            <div class="forfait-detail">8 posts LinkedIn + 4 visuels Runway</div>
+          </div>
+        </div>
+        <div class="forfait-price">97€ <span>/mois</span></div>
+      </div>
+      <div class="forfait-card selected" onclick="selectForfait(this, 197, 'Pro')">
+        <div class="forfait-left">
+          <div class="forfait-radio"></div>
+          <div>
+            <div class="forfait-name">Pro <span class="forfait-badge">Populaire</span></div>
+            <div class="forfait-detail">16 posts LinkedIn + 8 visuels Runway</div>
+          </div>
+        </div>
+        <div class="forfait-price">197€ <span>/mois</span></div>
+      </div>
+      <div class="forfait-card" onclick="selectForfait(this, 347, 'Premium')">
+        <div class="forfait-left">
+          <div class="forfait-radio"></div>
+          <div>
+            <div class="forfait-name">Premium <span class="forfait-badge">Complet</span></div>
+            <div class="forfait-detail">16 posts LinkedIn + 16 visuels Runway</div>
+          </div>
+        </div>
+        <div class="forfait-price">347€ <span>/mois</span></div>
+      </div>
+    </div>
+
+    <div class="section-label">Langues supplémentaires <span style="font-size:10px;color:var(--muted);text-transform:none;letter-spacing:0;font-weight:300">(+30% par langue)</span></div>
+    <div class="langues-grid">
+      <div class="langue-option disabled selected">
+        <div class="langue-check">✓</div>
+        🇫🇷 Français (inclus)
+      </div>
+      <div class="langue-option" onclick="toggleLangue(this)">
+        <div class="langue-check"></div>
+        🇬🇧 Anglais
+      </div>
+      <div class="langue-option" onclick="toggleLangue(this)">
+        <div class="langue-check"></div>
+        🇪🇸 Espagnol
+      </div>
+      <div class="langue-option" onclick="toggleLangue(this)">
+        <div class="langue-check"></div>
+        🇩🇪 Allemand
+      </div>
+      <div class="langue-option" onclick="toggleLangue(this)">
+        <div class="langue-check"></div>
+        🇮🇹 Italien
+      </div>
+      <div class="langue-option" onclick="toggleLangue(this)">
+        <div class="langue-check"></div>
+        🇳🇱 Néerlandais
+      </div>
+    </div>
+
+    <div class="price-summary" id="price-summary">
+      <div class="price-row"><span>Forfait Pro</span><span>197€</span></div>
+      <div class="price-row" id="langues-row" style="display:none"><span id="langues-label">Langues supplémentaires</span><span id="langues-montant">+0€</span></div>
+      <div class="price-row total"><span>Total mensuel</span><span id="total-price">197€</span></div>
+    </div>
+
+    <div class="stripe-box">
+      <div class="stripe-header">
+        💳 Paiement sécurisé
+        <span class="stripe-secure">🔒 Stripe SSL</span>
+      </div>
+      <div class="card-field">
+        <span>Numéro de carte</span>
+        <span style="letter-spacing:2px;font-size:12px">•••• •••• •••• ••••</span>
+      </div>
+      <div class="card-row">
+        <div class="card-field">MM / AA</div>
+        <div class="card-field">CVC •••</div>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:6px;margin-bottom:1rem">
+        🔒 Vos données sont chiffrées et sécurisées par Stripe. La Vitrine n'a jamais accès à vos coordonnées bancaires.
+      </div>
+      <button class="btn-test" onclick="demanderTest()">🖼️ Recevoir un visuel de test gratuit d'abord</button>
+      <button class="btn-generate" style="width:100%" onclick="payerEtGenerer()">✨ Valider et démarrer mon forfait</button>
+      <div class="sans-engagement">⚡ <strong>Sans engagement</strong> — résiliable à tout moment, sans frais</div>
+    </div>
+
+    <div class="nav-buttons" style="border:none;padding:0">
+      <button class="btn-back" onclick="prevStep(5)">← Retour</button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading" id="loading">
+    <div>
+      <span class="loading-dot"></span>
+      <span class="loading-dot"></span>
+      <span class="loading-dot"></span>
+    </div>
+    <p>L'IA crée vos 16 posts LinkedIn personnalisés…</p>
+  </div>
+
+  <!-- Results -->
+  <div class="results" id="results">
+    <div class="step-title" style="margin-bottom:0.3rem">Vos 16 posts LinkedIn</div>
+    <div class="step-subtitle">Prêts à être publiés. Téléchargez le CSV pour les utiliser.</div>
+    <div id="posts-container"></div>
+    <button class="btn-generate" style="width:100%;margin-top:1rem" onclick="downloadCSV()">⬇️ Télécharger le CSV</button>
+  </div>
+
+</div>
+
+<script>
+let currentStep = 1;
+let generatedPosts = [];
+let forfaitBase = 197;
+let forfaitNom = 'Pro';
+let languesExtra = 0;
+
+function nextStep(from) { goToStep(from + 1); }
+function prevStep(from) { goToStep(from - 1); }
+function goToStep(step) {
+  document.getElementById('panel-' + currentStep).classList.remove('active');
+  currentStep = step;
+  document.getElementById('panel-' + currentStep).classList.add('active');
+  updateProgress();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function updateProgress() {
+  for (let i = 1; i <= 5; i++) {
+    const ind = document.getElementById('step-indicator-' + i);
+    if (!ind) continue;
+    ind.classList.remove('active', 'done');
+    if (i < currentStep) ind.classList.add('done');
+    else if (i === currentStep) ind.classList.add('active');
+    if (i < 5) {
+      const line = document.getElementById('line-' + i);
+      if (line) line.classList.toggle('done', i < currentStep);
+    }
+  }
+}
+
+function selectForfait(el, prix, nom) {
+  document.querySelectorAll('.forfait-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  forfaitBase = prix;
+  forfaitNom = nom;
+  updatePriceSummary();
+}
+
+function toggleLangue(el) {
+  if (el.classList.contains('disabled')) return;
+  el.classList.toggle('selected');
+  el.querySelector('.langue-check').textContent = el.classList.contains('selected') ? '✓' : '';
+  languesExtra = document.querySelectorAll('.langue-option.selected:not(.disabled)').length;
+  updatePriceSummary();
+}
+
+function updatePriceSummary() {
+  const supplement = Math.round(forfaitBase * 0.30 * languesExtra);
+  const total = forfaitBase + supplement;
+  document.querySelector('.price-row:first-child span:first-child').textContent = 'Forfait ' + forfaitNom;
+  document.querySelector('.price-row:first-child span:last-child').textContent = forfaitBase + '€';
+  const languesRow = document.getElementById('langues-row');
+  if (languesExtra > 0) {
+    languesRow.style.display = 'flex';
+    document.getElementById('langues-label').textContent = languesExtra + ' langue' + (languesExtra > 1 ? 's' : '') + ' supplémentaire' + (languesExtra > 1 ? 's' : '');
+    document.getElementById('langues-montant').textContent = '+' + supplement + '€';
+  } else {
+    languesRow.style.display = 'none';
+  }
+  document.getElementById('total-price').textContent = total + '€';
+}
+
+async function demanderTest() {
+  alert('✨ Votre visuel de test est en cours de création ! Vous le recevrez dans votre boîte Drive sous 24h.');
+}
+
+async function payerEtGenerer() {
+  alert('💳 Intégration Stripe à configurer avec votre clé API Stripe. Le forfait ' + forfaitNom + ' à ' + (forfaitBase + Math.round(forfaitBase * 0.30 * languesExtra)) + '€/mois sera activé.');
+}
+
+
+function toggleAI(field, mode) {
+  const btns = document.querySelectorAll(`#${field}-input`).length
+    ? document.getElementById(`${field}-input`).parentElement.querySelectorAll('button')
+    : null;
+
+  const toggle = document.getElementById(`${field}-input`).previousElementSibling;
+  toggle.querySelectorAll('button').forEach((b, i) => {
+    b.classList.toggle('selected', (i === 0 && mode === 'moi') || (i === 1 && mode === 'ia'));
+  });
+
+  document.getElementById(`${field}-input`).classList.toggle('visible', mode === 'moi');
+  document.getElementById(`${field}-ia`).classList.toggle('visible', mode === 'ia');
+}
+
+function selectTon(el, val) {
+  document.querySelectorAll('.ton-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('ton-selected').value = val;
+}
+
+function selectStyle(el, val) {
+  document.querySelectorAll('.style-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('style-selected').value = val;
+}
+
+function handleUpload(input, nameId) {
+  if (input.files[0]) {
+    document.getElementById(nameId).textContent = '✓ ' + input.files[0].name;
+  }
+}
+
+async function generer() {
+  const uuid = window.location.pathname.split('/').pop() || 'test';
+
+  document.getElementById('panel-4').classList.remove('active');
+  document.getElementById('loading').classList.add('visible');
+
+  const payload = {
+    nom: document.getElementById('prenom').value + ' ' + document.getElementById('nom').value,
+    email: document.getElementById('email').value,
+    entreprise: document.getElementById('entreprise').value,
+    secteur: document.getElementById('secteur').value,
+    offre: document.getElementById('offre').value,
+    prix: document.getElementById('prix').value,
+    benefices: document.getElementById('benefices').value,
+    cta: document.getElementById('cta').value,
+    accroche: document.getElementById('accroche-input').classList.contains('visible')
+      ? document.getElementById('accroche').value : 'Laissez l\'IA créer',
+    message: document.getElementById('message-input').classList.contains('visible')
+      ? document.getElementById('message').value : 'Laissez l\'IA choisir',
+    intention: document.getElementById('intention-offre').value,
+    eviter: document.getElementById('eviter').value,
+    ton: document.getElementById('ton-selected').value,
+    couleurs: [
+      document.getElementById('color1-ral').value + ' ' + document.getElementById('color1-desc').value,
+      document.getElementById('color2-ral').value + ' ' + document.getElementById('color2-desc').value,
+      document.getElementById('color3-ral').value + ' ' + document.getElementById('color3-desc').value,
+      document.getElementById('colors-libre').value
+    ].filter(Boolean).join(' | '),
+    style: document.getElementById('style-selected').value,
+  };
+
+  try {
+    const res = await fetch(`/api/generate/${uuid}`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    generatedPosts = data.posts || [];
+    afficherResultats();
+  } catch(e) {
+    alert('Erreur lors de la génération. Vérifiez votre connexion.');
+    document.getElementById('loading').classList.remove('visible');
+    document.getElementById('panel-4').classList.add('active');
+  }
+}
+
+function afficherResultats() {
+  document.getElementById('loading').classList.remove('visible');
+  const container = document.getElementById('posts-container');
+  container.innerHTML = generatedPosts.map(p => `
+    <div class="result-card">
+      <div class="result-ton">${p.ton || 'Post ' + p.post_id}</div>
+      <div class="result-content">${p.contenu || p.content || ''}</div>
+      ${p.prompt_image ? `<div class="result-prompt">🖼️ ${p.prompt_image}</div>` : ''}
+    </div>
+  `).join('');
+  document.getElementById('results').classList.add('visible');
+}
+
+function downloadCSV() {
+  if (!generatedPosts.length) return;
+  const headers = ['Post ID', 'Ton', 'Contenu', 'Prompt Image', 'Hashtags'];
+  const rows = generatedPosts.map(p => [
+    p.post_id, p.ton, `"${(p.contenu||'').replace(/"/g,'""')}"`,
+    `"${(p.prompt_image||'').replace(/"/g,'""')}"`, p.hashtags || ''
+  ]);
+  const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
+  const blob = new Blob([csv], {type: 'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'la-vitrine-posts.csv';
+  a.click();
+}
+</script>
+</body>
+</html>
