@@ -1,78 +1,62 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>La Vitrine - Brief LinkedIn</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; }
-        h1 { color: #6c63ff; }
-        input, textarea, select { width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
-        button { background: #6c63ff; color: white; padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer; width: 100%; font-size: 16px; }
-        .post { background: #f9f9f9; padding: 16px; margin: 12px 0; border-radius: 8px; border-left: 4px solid #6c63ff; }
-    </style>
-</head>
-<body>
-    <h1>🎯 La Vitrine</h1>
-    <p>Remplissez ce formulaire pour générer vos 16 posts LinkedIn</p>
+## 📋 Formulaire 5 étapes
+1. **Identité** : Prénom, Nom, Email, Téléphone (optionnel), LinkedIn, Entreprise, Secteur
+2. **Offre** : Produit/service, Prix, Promo, Bénéfices, CTA, Note d'intention ✦
+3. **Message** : Accroche, Message clé, Intention (toggle IA), Sujets à éviter, Ton (4 options)
+4. **Visuel** : Couleurs (RAL/Pantone/description libre), Style visuel, Upload logo, Exemples
+5. **Paiement** : Choix forfait, Langues (+30%/langue), Récapitulatif prix, Stripe, Bouton test visuel
 
-    <label>Nom / Prénom</label>
-    <input type="text" id="nom" placeholder="Marie Dupont" />
+## 💰 Grille tarifaire
+| Forfait | Prix | Contenu |
+|---------|------|---------|
+| Essentiel | 97€/mois | 8 posts + 4 visuels |
+| Pro | 197€/mois | 16 posts + 8 visuels |
+| Premium | 347€/mois | 16 posts + 16 visuels |
 
-    <label>Secteur d'activité</label>
-    <input type="text" id="secteur" placeholder="Coaching, Consulting..." />
+- Langue supplémentaire : **+30% par langue**
+- Langues dispo : FR (inclus), EN, ES, DE, IT, NL
+- **Sans engagement** — résiliable à tout moment
 
-    <label>Offres / Services</label>
-    <textarea id="offres" rows="3" placeholder="Décrivez vos offres..."></textarea>
+## 🎤 Tons de communication
+- 🌟 Inspirant / Motivant
+- 🎯 Expert / Autorité
+- 📖 Storytelling / Personnel
+- 😄 Humour / Décalé
 
-    <label>Résultats / Promesse client</label>
-    <textarea id="resultats" rows="3" placeholder="Ex: Je double votre CA en 6 mois..."></textarea>
+## 🎨 Design formulaire
+- Palette : crème (#FAF7F2) + doré (#C9A96E) + dark (#1A1714)
+- Fonts : Playfair Display + DM Sans
+- Champs obligatoires marqués ✦ doré
+- Toggles IA sur champs créatifs
+- Calcul prix temps réel sur sélection langues
 
-    <label>Ton de communication</label>
-    <select id="ton">
-        <option>Inspirant / Motivant</option>
-        <option>Expert / Autorité</option>
-        <option>Storytelling / Personnel</option>
-        <option>Humour / Décalé</option>
-    </select>
+## 💾 Google Drive Integration
+- Service account : la-vitrine-bot@la-vitrine-496114.iam.gserviceaccount.com
+- Folder ID : 1RGbcMs6m5XWMo2YTF3Fvm3e0QCJjo2Dk
+- Structure : /La Vitrine/Clients/[Client Name]/
 
-    <button onclick="generer()">✨ Générer mes 16 posts</button>
+## 💳 Paiement
+- **Stripe** (à connecter avec clé API)
+- Bouton test visuel gratuit avant paiement
+- Mention sans engagement visible
 
-    <div id="resultats-posts"></div>
+## 📊 Output CSV
+Post ID, Ton, Contenu, Prompt Image, Hashtags
 
-    <script>
-        async function generer() {
-            const uuid = window.location.pathname.split('/').pop();
-            const btn = document.querySelector('button');
-            btn.textContent = '⏳ Génération en cours...';
-            btn.disabled = true;
+## 🐳 Docker
+```bash
+docker compose up
+docker build -t la-vitrine:latest .
+```
 
-            const res = await fetch(`/api/generate/${uuid}`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    nom: document.getElementById('nom').value,
-                    secteur: document.getElementById('secteur').value,
-                    offres: document.getElementById('offres').value,
-                    resultats: document.getElementById('resultats').value,
-                    ton: document.getElementById('ton').value
-                })
-            });
+## 📝 Prochaines étapes
+1. ⏳ Remplacer templates/index.html dans GitHub par nouveau formulaire 5 étapes
+2. ⏳ Connecter Stripe (clé API)
+3. ⏳ Tester flow complet avec 3 clients gratuits
+4. ⏳ Collecter témoignages + visuels pour page de vente
+5. ⏳ Automatiser envoi email avec lien Drive au client
 
-            const data = await res.json();
-            btn.textContent = '✨ Générer mes 16 posts';
-            btn.disabled = false;
-
-            if (data.posts) {
-                document.getElementById('resultats-posts').innerHTML =
-                    data.posts.map(p => `
-                        <div class="post">
-                            <strong>Post ${p.post_id} — ${p.ton}</strong>
-                            <p>${p.contenu}</p>
-                            <small>🖼️ ${p.prompt_image}</small>
-                        </div>
-                    `).join('');
-            }
-        }
-    </script>
-</body>
-</html>
+## 💡 Stratégie commerciale
+- 3 clients test GRATUITS pour valider le service
+- Cible : dirigeants de PME (valeur temps élevée)
+- Argument : clé en main, sans engagement, mieux ciblé grâce au formulaire
+- Visuel exemple : toilettage canin Séverine (référence qualité)
